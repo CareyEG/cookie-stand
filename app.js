@@ -1,225 +1,221 @@
 'use strict';
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Global variables for DOM access and such
+// var chatList = document.getElementById('chat-list');
+// var chatForm = document.getElementById('chat-form');
+// var clearChatList = document.getElementById('clear-chat-list');
+// var allComments = [];
+
+// // +++++++++++++++++++++++++++++++++++++++++++++++++++++
+// // Here's the constructor for the individual comments
+// var Comment = function(userName, text) {
+//   this.userName = userName;
+//   this.text = text;
+// };
+
+// Comment.prototype.render = function() {
+//   var liEl = document.createElement('li');
+//   liEl.innerHTML = '<img width="100px" src="img/' + this.userName + '.jpg"> <b>' + this.userName + ': </b><em>' + this.text + '</em>';
+//   return liEl;
+// };
+
+// Comment.prototype.dog = 'WOOF';
+
+
+// // +++++++++++++++++++++++++++++++++++++++++++++++++++++
+// // FUNCTION DECLARATIONS
+
+// // This function goes through the array of comments and calls the render() method on each one
+// function renderAllComments() {
+//   chatList.innerHTML = '';
+
+//   for (var i = 0; i < allComments.length; i++) {
+//     chatList.appendChild(allComments[i].render());
+//   }
+// }
+
+// // This function is the event handler for the submission of comments
+// function handleCommentSubmit(event) {
+//   // console.log('log of the event object', event);
+//   // console.log('log of the event.target', event.target);
+//   // console.log('log of the event.target.who', event.target.who);
+//   console.log('log of event.target.who.value', event.target.who.value);
+
+//   event.preventDefault(); // gotta have it for this purpose. prevents page reload on a 'submit' event
+
+//   // Validation to prevent empty form fields
+//   if (!event.target.says.value || !event.target.who.value) {
+//     return alert('Fields cannot be empty!');
+//   }
+
+//   var commenter = event.target.who.value;
+//   var remark = event.target.says.value;
+
+//   if (commenter === 'Sam') {
+//     remark = '@$^#$%$^@#$%@';
+//   }
+
+//   if (commenter === 'Allie') {
+//     remark = remark.toUpperCase();
+//   }
+
+//   if (commenter === 'Otis') {
+//     remark = '&#9835; Shama-lama-ding-dong &#9835;';
+//   }
+
+//   if (commenter === 'Demi') {
+//     remark = 'WOOF';
+//   }
+
+//   var newComment = new Comment(commenter, remark);
+//   // console.log('this is the Comment instance', newComment);
+
+//   // console.log('Comment by ' + event.target.who.value + ' at ' + Date());
+
+//   // This empties the form fields after the data has been grabbed
+//   event.target.who.value = null;
+//   event.target.says.value = null;
+
+//   allComments.unshift(newComment);
+//   renderAllComments();
+// }
+
+// // +++++++++++++++++++++++++++++++++++++++++++++++++++++
+// // Event listener for comment submission form
+// chatForm.addEventListener('submit', handleCommentSubmit);
+
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Event listener for the 'Clear all comments' button
+// clearChatList.addEventListener('click', function() {
+//   chatList.innerHTML = '';
+//   console.log('You just cleared the chat list!');
+//   allComments = [];
+// });
+
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++
+/* Here is where we would put everything else that we want to execute on page load. This is where you would usually find function calls, but since this app is all driven ansynchronously by user interaction, the first JS that will execute is waiting inside the event listeners. */
+
+// will hold all the store object instances
+
+var allStores = [];
+
+var salesTable = document.getElementById('sales-table');
+
 
 var hours = ['6am', '7am', '8am', '9am', '10am', '11am', '12pm', '1pm', '2pm', '3pm', '4pm', '5pm', '6pm', '7pm', '8pm'];
 
-var pikePlace = {
-  minCustomersEachHour: 23,
-  maxCustomersEachHour: 65,
-  avgCookiesPerCustomer: 6.3,
-  customersEachHour: [],
-  cookiesEachHour: [],
-  totalCookiesForTheDay: 0,
-  calcCustomersEachHour: function() {
+function Store (name, min, max, avg){
+  this.name = name;
+  this.minCustomersEachHour = min;
+  this.maxCustomersEachHour = max;
+  this.avgCookiesPerCustomer = avg;
+  this.customersEachHour = [];
+  this.cookiesEachHour = [];
+  this.totalCookiesForTheDay = 0;
+  this.calcCustomersEachHour = function() {
     for(var i = 0; i < hours.length; i++) {
       this.customersEachHour.push(calcRandomCustomers(this.minCustomersEachHour, this.maxCustomersEachHour));
     }
-  },
-  calcCookiesEachHour: function() {
+  };
+  this.calcCookiesEachHour = function() {
     this.calcCustomersEachHour();
     for (var i = 0; i < hours.length; i++) {
       var oneHourOfCookies = Math.ceil(this.customersEachHour[i] * this.avgCookiesPerCustomer);
       this.cookiesEachHour.push(oneHourOfCookies);
       this.totalCookiesForTheDay += oneHourOfCookies;
     }
-  },
-  render() {
+  };
+  this.render = function() {
     this.calcCookiesEachHour();
-    // access the element in the DOM where we will put things
-    var pikeUl = document.getElementById('pike');
+
+    var trEl = document.createElement('tr');
+    var tdEl = document.createElement('td');
+    tdEl.textContent = this.name;
+    trEl.appendChild(tdEl);
     for(var i = 0; i < hours.length; i++) {
       // for each list item
       // --create an element
-      var liEl = document.createElement('li');
+      tdEl = document.createElement('td');
       // --give it content
       // Sample: 6am: 16 cookies
       // liEl.textContent = hours[i] + ': ' + this.cookiesEachHour[i] + ' cookies';
-      liEl.textContent = `${hours[i]}: ${this.cookiesEachHour[i]} cookies`;
+      tdEl.textContent = this.cookiesEachHour[i];
       // --append it to the DOM
-      pikeUl.appendChild(liEl);
+      trEl.appendChild(tdEl);
     }
-    // total list item
+    // total list itemz
     // --create an element
-    liEl = document.createElement('li');
+    tdEl = document.createElement('td');
     // --give it content
     // liEl.textContent = 'Total: ' + this.totalCookiesForTheDay + ' cookies';
-    liEl.textContent = `Total: ${this.totalCookiesForTheDay} cookies`;
+    tdEl.textContent = this.totalCookiesForTheDay;
     // --append it to the DOM
-    pikeUl.appendChild(liEl);
-  }
-};
+    trEl.appendChild(tdEl);
+    salesTable.appendChild(trEl);
+  };
+  allStores.push(this);
+}
+
+var pikePlace = new Store('1st and Pike', 23, 65, 6.3);
+var seatac = new Store('Seattle Tacoma Airport', 3, 24, 1.2);
+var seaCenter = new Store('Seattle Center', 11, 38, 3.7);
+var capitolHill = new Store('Capitol Hill', 20, 38, 2.3);
+var alki = new Store('Alki', 2, 16, 4.6);
+
+makeHeaderRow();
+pikePlace.render();
+seatac.render();
+seaCenter.render();
+capitolHill.render();
+alki.render();
+
+
 // Helper function
 function calcRandomCustomers(min, max) {
   // following line from MDN docs on Math.random
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-var airport = {
-  minCustomersEachHour: 3,
-  maxCustomersEachHour: 24,
-  avgCookiesPerCustomer: 1.2,
-  customersEachHour: [],
-  cookiesEachHour: [],
-  totalCookiesForTheDay: 0,
-  calcCustomersEachHour: function() {
-    for(var i = 0; i < hours.length; i++) {
-      this.customersEachHour.push(calcRandomCustomers(this.minCustomersEachHour, this.maxCustomersEachHour));
-    }
-  },
-  calcCookiesEachHour: function() {
-    this.calcCustomersEachHour();
-    for (var i = 0; i < hours.length; i++) {
-      var oneHourOfCookies = Math.ceil(this.customersEachHour[i] * this.avgCookiesPerCustomer);
-      this.cookiesEachHour.push(oneHourOfCookies);
-      this.totalCookiesForTheDay += oneHourOfCookies;
-    }
-  },
-  render() {
-    this.calcCookiesEachHour();
-    var seatacUl = document.getElementById('seatac');
-    for(var i = 0; i < hours.length; i++) {
-      var liEl = document.createElement('li');
-      liEl.textContent = `${hours[i]}: ${this.cookiesEachHour[i]} cookies`;
-      seatacUl.appendChild(liEl);
-    }
-    liEl = document.createElement('li');
-    liEl.textContent = `Total: ${this.totalCookiesForTheDay} cookies`;
-    seatacUl.appendChild(liEl);
-  }
-};
-function calcRandomCustomers(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 
 
-var seattleCenter = {
-  minCustomersEachHour: 11,
-  maxCustomersEachHour: 38,
-  avgCookiesPerCustomer: 3.7,
-  customersEachHour: [],
-  cookiesEachHour: [],
-  totalCookiesForTheDay: 0,
-  calcCustomersEachHour: function() {
-    for(var i = 0; i < hours.length; i++) {
-      this.customersEachHour.push(calcRandomCustomers(this.minCustomersEachHour, this.maxCustomersEachHour));
-    }
-  },
-  calcCookiesEachHour: function() {
-    this.calcCustomersEachHour();
-    for (var i = 0; i < hours.length; i++) {
-      var oneHourOfCookies = Math.ceil(this.customersEachHour[i] * this.avgCookiesPerCustomer);
-      this.cookiesEachHour.push(oneHourOfCookies);
-      this.totalCookiesForTheDay += oneHourOfCookies;
-    }
-  },
-  render() {
-    this.calcCookiesEachHour();
-    var seattleCenterUl = document.getElementById('seattlecenter');
-    for(var i = 0; i < hours.length; i++) {
-      var liEl = document.createElement('li');
-      liEl.textContent = `${hours[i]}: ${this.cookiesEachHour[i]} cookies`;
-      seattleCenterUl.appendChild(liEl);
-    }
-    liEl = document.createElement('li');
-    liEl.textContent = `Total: ${this.totalCookiesForTheDay} cookies`;
-    seattleCenterUl.appendChild(liEl);
+
+
+function makeHeaderRow() {
+  // create the row
+  var trEl = document.createElement('tr');
+  // create, content, append first cell
+  var thEl = document.createElement('th');
+  thEl.textContent = 'Store Name';
+  trEl.appendChild(thEl);
+  for (var i = 0; i < hours.length; i++){
+    thEl = document.createElement('th');
+    thEl.textContent = hours[i];
+    trEl.appendChild(thEl);
   }
-};
-function calcRandomCustomers(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+  // create, content, append second cell
+  thEl = document.createElement('th');
+  thEl.textContent = 'Totals';
+  trEl.appendChild(thEl);
+  // create, content, append third cell
+  // append the row to the table
+  salesTable.appendChild(trEl);
 }
 
 
 
-var capitalHill = {
-  minCustomersEachHour: 20,
-  maxCustomersEachHour: 38,
-  avgCookiesPerCustomer: 2.3,
-  customersEachHour: [],
-  cookiesEachHour: [],
-  totalCookiesForTheDay: 0,
-  calcCustomersEachHour: function() {
-    for(var i = 0; i < hours.length; i++) {
-      this.customersEachHour.push(calcRandomCustomers(this.minCustomersEachHour, this.maxCustomersEachHour));
-    }
-  },
-  calcCookiesEachHour: function() {
-    this.calcCustomersEachHour();
-    for (var i = 0; i < hours.length; i++) {
-      var oneHourOfCookies = Math.ceil(this.customersEachHour[i] * this.avgCookiesPerCustomer);
-      this.cookiesEachHour.push(oneHourOfCookies);
-      this.totalCookiesForTheDay += oneHourOfCookies;
-    }
-  },
-  render() {
-    this.calcCookiesEachHour();
-    var capitalHillUl = document.getElementById('capitalhill');
-    for(var i = 0; i < hours.length; i++) {
-      var liEl = document.createElement('li');
-      liEl.textContent = `${hours[i]}: ${this.cookiesEachHour[i]} cookies`;
-      capitalHillUl.appendChild(liEl);
-    }
-    liEl = document.createElement('li');
-    liEl.textContent = `Total: ${this.totalCookiesForTheDay} cookies`;
-    capitalHillUl.appendChild(liEl);
+// It would be nice to have a single function that renders all of the individual cat rows
+function renderallHours() {
+  for (var i = 0; i < allHours.length; i++) {    
+    allHours[i].render();
   }
-};
-function calcRandomCustomers(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-
-var alki = {
-  minCustomersEachHour: 20,
-  maxCustomersEachHour: 38,
-  avgCookiesPerCustomer: 2.3,
-  customersEachHour: [],
-  cookiesEachHour: [],
-  totalCookiesForTheDay: 0,
-  calcCustomersEachHour: function() {
-    for(var i = 0; i < hours.length; i++) {
-      this.customersEachHour.push(calcRandomCustomers(this.minCustomersEachHour, this.maxCustomersEachHour));
-    }
-  },
-  calcCookiesEachHour: function() {
-    this.calcCustomersEachHour();
-    for (var i = 0; i < hours.length; i++) {
-      var oneHourOfCookies = Math.ceil(this.customersEachHour[i] * this.avgCookiesPerCustomer);
-      this.cookiesEachHour.push(oneHourOfCookies);
-      this.totalCookiesForTheDay += oneHourOfCookies;
-    }
-  },
-  render() {
-    this.calcCookiesEachHour();
-    var alkiUl = document.getElementById('alki');
-    for(var i = 0; i < hours.length; i++) {
-      var liEl = document.createElement('li');
-      liEl.textContent = `${hours[i]}: ${this.cookiesEachHour[i]} cookies`;
-      alkiUl.appendChild(liEl);
-    }
-    liEl = document.createElement('li');
-    liEl.textContent = `Total: ${this.totalCookiesForTheDay} cookies`;
-    alkiUl.appendChild(liEl);
-  }
-};
-function calcRandomCustomers(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+// Now we need to call our functions: the one for the header row, and the one for generating the individual cat rows
 
 
-// var Alki = {
-//   name: 'Alki',
-//   minhrly: 2,
-//   maxhrly: 16,
-//   avgcookies: 4.6,
-//   introduction: function(){
-//     console.log(+ this.name + 's hourly minimum customers was ' + this.minhrly + '. It\'s hourly maximum customers was ' + this.maxhrly + ', and the average cookie sales were calculated to ' + this.avgcookies + '.');
-//     function getRandomArbitrary(min, max) {
-//       min = Math.ceil(min);
-//       max = Math.floor(max);
-//       return Math.floor(Math.random() * (max - min + 1)) + min;}
-    
-//     getRandomArbitrary(2, 16) * (4.6);
-//   },
-// };
+renderallHours();
+
+// Don't forget in the Chrome dev tools to observe the difference between the HTML shown in the Sources tab versus the Elements tab!
+
 
 
