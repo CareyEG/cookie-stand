@@ -47,6 +47,9 @@ var pikePlace = {
     pikeUl.appendChild(liEl);
   }
 };
+
+pikePlace.render();
+
 // Helper function
 function calcRandomCustomers(min, max) {
   // following line from MDN docs on Math.random
@@ -86,6 +89,9 @@ var airport = {
     seatacUl.appendChild(liEl);
   }
 };
+
+airport.render();
+
 function calcRandomCustomers(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -124,13 +130,16 @@ var seattleCenter = {
     seattleCenterUl.appendChild(liEl);
   }
 };
+
+seattleCenter.render();
+
 function calcRandomCustomers(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 
 
-var capitalHill = {
+var capitolHill = {
   minCustomersEachHour: 20,
   maxCustomersEachHour: 38,
   avgCookiesPerCustomer: 2.3,
@@ -152,17 +161,20 @@ var capitalHill = {
   },
   render() {
     this.calcCookiesEachHour();
-    var capitalHillUl = document.getElementById('capitalhill');
+    var capitolHillUl = document.getElementById('capitolhill');
     for(var i = 0; i < hours.length; i++) {
       var liEl = document.createElement('li');
       liEl.textContent = `${hours[i]}: ${this.cookiesEachHour[i]} cookies`;
-      capitalHillUl.appendChild(liEl);
+      capitolHillUl.appendChild(liEl);
     }
     liEl = document.createElement('li');
     liEl.textContent = `Total: ${this.totalCookiesForTheDay} cookies`;
-    capitalHillUl.appendChild(liEl);
+    capitolHillUl.appendChild(liEl);
   }
 };
+
+capitolHill.render();
+
 function calcRandomCustomers(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -201,6 +213,9 @@ var alki = {
     alkiUl.appendChild(liEl);
   }
 };
+
+alki.render();
+
 function calcRandomCustomers(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
