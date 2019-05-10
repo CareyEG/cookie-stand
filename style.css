@@ -23,7 +23,7 @@
     color: white;
   }
 
-  /* img {
+  img {
     vertical-align: middle;
     padding: 5px;
     margin-bottom: 20px;
@@ -34,21 +34,21 @@
     border-radius: 8px;
     padding: 5px 5px 5px 5px;
     margin: 15px;
-  } */
+  } 
   
-  /* label {
+   label {
     color: white;
-  } */
+  } 
   
-  /* fieldset {
+  fieldset {
     max-width: 700px;
     border: 7px solid #73094c;
     border-radius: 75px;
     padding: 10px;
     text-align: center;
-  } */
+  }
   
-  /* legend {
+  legend {
     background-color: black;
     border: 1px solid #dcdcdc;
     border-radius: 10px;
@@ -57,9 +57,9 @@
     text-align: left;
     text-transform: uppercase;
     font-weight: bold;
-  } */
+  }
   
-  /* button {
+  button {
     color: #73094c;
     text-shadow: 0px 1px 1px #ffffff;
     border: 2px solid #b2b2b2;
@@ -68,9 +68,9 @@
     background: -moz-linear-gradient(top, #F0E8C7, #9C9060);
     background: -o-linear-gradient(top, #F0E8C7, #9C9060);
     background: -ms-linear-gradient(top, #F0E8C7, #9C9060);
-  } */
+  }
   
-  /* button:hover {
+  button:hover {
     color: #73094c;
     border: 2px solid #a4a4a4;
     background-color: #73094c;
@@ -78,4 +78,4 @@
     background: -moz-linear-gradient(top, #F0E8C7, #9C9000);
     background: -o-linear-gradient(top, #F0E8C7, #9C9000);
     background: -ms-linear-gradient(top, #F0E8C7, #9C9000);
-  } */
+  }
