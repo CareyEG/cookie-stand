@@ -98,6 +98,8 @@
 // will hold all the store object instances
 
 var allStores = [];
+var footerHourlyTotals = [];
+var grandTotal = 0;
 
 var salesTable = document.getElementById('sales-table');
 
@@ -156,19 +158,16 @@ function Store (name, min, max, avg){
   allStores.push(this);
 }
 
-var pikePlace = new Store('1st and Pike', 23, 65, 6.3);
-var seatac = new Store('Seattle Tacoma Airport', 3, 24, 1.2);
-var seaCenter = new Store('Seattle Center', 11, 38, 3.7);
-var capitolHill = new Store('Capitol Hill', 20, 38, 2.3);
-var alki = new Store('Alki', 2, 16, 4.6);
+new Store('1st and Pike', 23, 65, 6.3);
+new Store('Seattle Tacoma Airport', 3, 24, 1.2);
+new Store('Seattle Center', 11, 38, 3.7);
+new Store('Capitol Hill', 20, 38, 2.3);
+new Store('Alki', 2, 16, 4.6);
 
 makeHeaderRow();
-pikePlace.render();
-seatac.render();
-seaCenter.render();
-capitolHill.render();
-alki.render();
-
+renderAll();
+footerHourlyTotalsCalc();
+makeFooterRow();
 
 // Helper function
 function calcRandomCustomers(min, max) {
@@ -176,7 +175,22 @@ function calcRandomCustomers(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function renderAll(){
+  for(var i = 0; i < allStores.length; i++){
+    allStores[i].render();
+  }
+}
 
+function footerHourlyTotalsCalc(){
+  for(var i = 0; i < hours.length; i++){
+    var hourlySum = 0;
+    for(var j = 0; j < allStores.length; j++){
+      hourlySum += allStores[j].cookiesEachHour[i];
+    }
+    grandTotal += hourlySum;
+    footerHourlyTotals[i] = hourlySum;
+  }
+}
 
 
 
@@ -202,18 +216,42 @@ function makeHeaderRow() {
 }
 
 
-
-// It would be nice to have a single function that renders all of the individual cat rows
-function renderallHours() {
-  for (var i = 0; i < allHours.length; i++) {    
-    allHours[i].render();
+function makeFooterRow() {
+  var tFoot = document.createElement('tfoot');
+  // create the row
+  var trEl = document.createElement('tr');
+  // create, content, append first cell
+  var tdEl = document.createElement('td');
+  tdEl.textContent = 'Totals';
+  trEl.appendChild(tdEl);
+  for (var i = 0; i < hours.length; i++){
+    tdEl = document.createElement('td');
+    tdEl.textContent = footerHourlyTotals[i];
+    trEl.appendChild(tdEl);
   }
+  // create, content, append second cell
+  tdEl = document.createElement('td');
+  tdEl.textContent = grandTotal;
+  trEl.appendChild(tdEl);
+  tFoot.appendChild(trEl);
+  // create, content, append third cell
+  // append the row to the table
+  salesTable.appendChild(tFoot);
 }
 
-// Now we need to call our functions: the one for the header row, and the one for generating the individual cat rows
 
 
-renderallHours();
+// It would be nice to have a single function that renders all of the individual cat rows
+// function renderallHours() {
+//   for (var i = 0; i < allHours.length; i++) {    
+//     allHours[i].render();
+//   }
+// }
+
+// // Now we need to call our functions: the one for the header row, and the one for generating the individual cat rows
+
+
+// renderallHours();
 
 // Don't forget in the Chrome dev tools to observe the difference between the HTML shown in the Sources tab versus the Elements tab!
 
